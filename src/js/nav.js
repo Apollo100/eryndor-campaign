@@ -1,4 +1,4 @@
-import { auth, db, currentUserId, currentUserEmail } from './main.js';
+import { auth, db, currentUserId, currentUserEmail } from './main';
 
 // ===============================
 // Navbar toggle (mobile support)
