@@ -1,57 +1,105 @@
-// nav.js - Proper Module Pattern with Dependency Injection
+// nav.js - Fixed dropdown functionality
 export default function initNav(auth, db, currentUserId, currentUserEmail) {
     console.log("Initializing nav module...");
 
     // ===============================
-    // Navbar toggle (mobile support)
+    // Navbar toggle (mobile support) - FIXED
     // ===============================
-    const primaryNav = document.getElementById("primary-navigation");
-    const navToggle = document.querySelector(".mobile-nav-toggle");
+    function initializeNavigation() {
+        console.log("Initializing navigation...");
 
-    document.addEventListener("DOMContentLoaded", () => {
-        console.log("nav.js DOM loaded - auth available:", typeof auth !== 'undefined');
-
-        const navItemsWithSubmenu = document.querySelectorAll(".nav-item.has-submenu");
-
+        // Fix: Use the correct navToggle element
         const navToggle = document.getElementById("navToggle");
         const sideNav = document.querySelector(".side-nav");
-        const toggleIcon = navToggle?.querySelector("i");
+        
+        console.log("navToggle found:", !!navToggle);
+        console.log("sideNav found:", !!sideNav);
 
-        if (navToggle && sideNav && toggleIcon) {
-            navToggle.addEventListener("click", () => {
-                sideNav.classList.toggle("open");
+        if (navToggle && sideNav) {
+            const toggleIcon = navToggle.querySelector("i");
+            console.log("toggleIcon found:", !!toggleIcon);
 
-                if(sideNav.classList.contains("open")) {
-                    toggleIcon.classList.remove("fa-bars");
-                    toggleIcon.classList.add("fa-xmark");
-                } else {
-                    toggleIcon.classList.remove("fa-xmark");
-                    toggleIcon.classList.add("fa-bars");
-                }
-            });
+            if (toggleIcon) {
+                navToggle.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("Nav toggle clicked");
+                    
+                    sideNav.classList.toggle("open");
+
+                    if(sideNav.classList.contains("open")) {
+                        toggleIcon.classList.remove("fa-bars");
+                        toggleIcon.classList.add("fa-xmark");
+                    } else {
+                        toggleIcon.classList.remove("fa-xmark");
+                        toggleIcon.classList.add("fa-bars");
+                    }
+                });
+            }
         }
+
+        // Fix: Submenu functionality with better event handling
+        const navItemsWithSubmenu = document.querySelectorAll(".nav-item.has-submenu");
+        console.log(`Found ${navItemsWithSubmenu.length} submenu items`);
 
         navItemsWithSubmenu.forEach(item => {
             const link = item.querySelector(".nav-link");
+            const submenu = item.querySelector(".submenu");
 
-            link.addEventListener("click", (e) => {
-                const submenu = item.querySelector(".submenu");
-                if (!submenu) return;
+            if (link && submenu) {
+                link.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("Submenu link clicked");
 
-                e.preventDefault(); // stop page navigation
+                    const isOpen = item.classList.contains("open");
 
-                const isOpen = item.classList.contains("open");
+                    // Close all other submenus first
+                    document.querySelectorAll(".nav-item.has-submenu.open").forEach(openItem => {
+                        if (openItem !== item) {
+                            openItem.classList.remove("open");
+                        }
+                    });
 
-                // Close all submenus
-                document.querySelectorAll(".nav-item.has-submenu.open")
-                    .forEach(openItem => openItem.classList.remove("open"));
+                    // Toggle current item
+                    if (!isOpen) {
+                        item.classList.add("open");
+                    } else {
+                        item.classList.remove("open");
+                    }
+                });
 
-                // Toggle clicked one
-                if (!isOpen) {
-                    item.classList.add("open");
-                }
-            });
+                // Prevent submenu from closing when clicking inside
+                submenu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
         });
+
+        // Close submenus when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-item.has-submenu')) {
+                document.querySelectorAll(".nav-item.has-submenu.open").forEach(openItem => {
+                    openItem.classList.remove("open");
+                });
+            }
+        });
+
+        // Close submenus on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll(".nav-item.has-submenu.open").forEach(openItem => {
+                    openItem.classList.remove("open");
+                });
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("DOM loaded, initializing navigation...");
+        
+        // Initialize navigation first
+        initializeNavigation();
 
         // ===============================
         // Login/Create Account Form Toggle
@@ -61,15 +109,19 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
         const loginForm = document.getElementById('loginForm');
         const createAccountForm = document.getElementById('createAccountForm');
 
-        if (loginToggle && createAccountToggle) {
-            loginToggle.addEventListener('click', function() {
+        if (loginToggle && createAccountToggle && loginForm && createAccountForm) {
+            console.log("Login form elements found");
+            
+            loginToggle.addEventListener('click', function(e) {
+                e.preventDefault();
                 loginForm.style.display = 'block';
                 createAccountForm.style.display = 'none';
                 loginToggle.classList.add('active');
                 createAccountToggle.classList.remove('active');
             });
 
-            createAccountToggle.addEventListener('click', function() {
+            createAccountToggle.addEventListener('click', function(e) {
+                e.preventDefault();
                 loginForm.style.display = 'none';
                 createAccountForm.style.display = 'block';
                 loginToggle.classList.remove('active');
@@ -78,7 +130,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
         }
 
         // ===============================
-        // Create Account Form Submission
+        // Create Account Form Submission - FIXED Firebase syntax
         // ===============================
         const createAccountFormEl = document.getElementById('createAccountForm');
         if (createAccountFormEl) {
@@ -107,7 +159,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
                     const email = `${username}@eryndor.local`;
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
 
-                    // Import serverTimestamp for Firestore
+                    // FIXED: Use modular Firebase syntax
                     const { serverTimestamp } = await import('firebase/firestore');
 
                     await db.collection("characters").doc(userCredential.user.uid).set({
@@ -162,7 +214,6 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
         const playerOnly = document.querySelectorAll(".player-only");
 
         if (user) {
-            // Update the state variables (passed by reference from main.js)
             currentUserId = user.uid;
             currentUserEmail = user.email;
 
