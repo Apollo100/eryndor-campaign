@@ -8,7 +8,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         lore: resolve(__dirname, 'pages/worldlore.html'),
         npcs: resolve(__dirname, 'pages/npcs.html'),
-        pcs: resolve(__dirname, 'pages/pcs.html'),
+        pcs: resolve(__dirname, 'pages/pc.html'),
         lore: resolve(__dirname, 'pages/worldlore.html'),
       }
     }
