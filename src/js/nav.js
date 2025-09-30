@@ -1,4 +1,4 @@
-// nav.js - Fixed dropdown functionality
+// nav.js - Fixed dropdown functionality with proper targeting
 export default function initNav(auth, db, currentUserId, currentUserEmail) {
     console.log("Initializing nav module...");
 
@@ -8,7 +8,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
     function initializeNavigation() {
         console.log("Initializing navigation...");
 
-        // Fix: Use the correct navToggle element
+        // Side nav toggle
         const navToggle = document.getElementById("navToggle");
         const sideNav = document.querySelector(".side-nav");
         
@@ -38,19 +38,26 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
             }
         }
 
-        // Fix: Submenu functionality with better event handling
+        // Fix: Submenu functionality with proper nav-item targeting
         const navItemsWithSubmenu = document.querySelectorAll(".nav-item.has-submenu");
-        console.log(`Found ${navItemsWithSubmenu.length} submenu items`);
+        console.log(`Found ${navItemsWithSubmenu.length} submenu nav items`);
 
-        navItemsWithSubmenu.forEach(item => {
+        navItemsWithSubmenu.forEach((item, index) => {
             const link = item.querySelector(".nav-link");
             const submenu = item.querySelector(".submenu");
+            const dropdownArrow = item.querySelector(".dropdown-arrow");
+
+            console.log(`Nav item ${index + 1}:`, {
+                link: !!link,
+                submenu: !!submenu,
+                dropdownArrow: !!dropdownArrow
+            });
 
             if (link && submenu) {
                 link.addEventListener("click", (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log("Submenu link clicked");
+                    console.log(`Submenu nav item ${index + 1} clicked`);
 
                     const isOpen = item.classList.contains("open");
 
@@ -58,14 +65,30 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
                     document.querySelectorAll(".nav-item.has-submenu.open").forEach(openItem => {
                         if (openItem !== item) {
                             openItem.classList.remove("open");
+                            // Reset dropdown arrow for closed items
+                            const closedArrow = openItem.querySelector(".dropdown-arrow");
+                            if (closedArrow) {
+                                closedArrow.classList.remove("fa-chevron-up");
+                                closedArrow.classList.add("fa-chevron-down");
+                            }
                         }
                     });
 
                     // Toggle current item
                     if (!isOpen) {
                         item.classList.add("open");
+                        // Rotate dropdown arrow
+                        if (dropdownArrow) {
+                            dropdownArrow.classList.remove("fa-chevron-down");
+                            dropdownArrow.classList.add("fa-chevron-up");
+                        }
                     } else {
                         item.classList.remove("open");
+                        // Reset dropdown arrow
+                        if (dropdownArrow) {
+                            dropdownArrow.classList.remove("fa-chevron-up");
+                            dropdownArrow.classList.add("fa-chevron-down");
+                        }
                     }
                 });
 
@@ -81,6 +104,12 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
             if (!e.target.closest('.nav-item.has-submenu')) {
                 document.querySelectorAll(".nav-item.has-submenu.open").forEach(openItem => {
                     openItem.classList.remove("open");
+                    // Reset dropdown arrows
+                    const dropdownArrow = openItem.querySelector(".dropdown-arrow");
+                    if (dropdownArrow) {
+                        dropdownArrow.classList.remove("fa-chevron-up");
+                        dropdownArrow.classList.add("fa-chevron-down");
+                    }
                 });
             }
         });
@@ -90,6 +119,12 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
             if (e.key === 'Escape') {
                 document.querySelectorAll(".nav-item.has-submenu.open").forEach(openItem => {
                     openItem.classList.remove("open");
+                    // Reset dropdown arrows
+                    const dropdownArrow = openItem.querySelector(".dropdown-arrow");
+                    if (dropdownArrow) {
+                        dropdownArrow.classList.remove("fa-chevron-up");
+                        dropdownArrow.classList.add("fa-chevron-down");
+                    }
                 });
             }
         });
@@ -130,7 +165,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
         }
 
         // ===============================
-        // Create Account Form Submission - FIXED Firebase syntax
+        // Create Account Form Submission
         // ===============================
         const createAccountFormEl = document.getElementById('createAccountForm');
         if (createAccountFormEl) {
@@ -159,7 +194,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
                     const email = `${username}@eryndor.local`;
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
 
-                    // FIXED: Use modular Firebase syntax
+                    // Use modular Firebase syntax
                     const { serverTimestamp } = await import('firebase/firestore');
 
                     await db.collection("characters").doc(userCredential.user.uid).set({
