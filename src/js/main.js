@@ -1,3 +1,7 @@
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFireStore } from 'firebase/firestore';
+
 // --- Firebase Config ---
 const firebaseConfig = {
     apiKey: "AIzaSyA7Ss7d5s2YH2IgGek5WJd0nDL4Fl7r9ro",
@@ -18,7 +22,6 @@ let currentUserEmail = null;
 
 export { auth, db, currentUserId, currentUserEmail };
 
-import './firebase-init.js';
 import './nav.js';
 import './pc.js';
 import './dm_user_manager.js';
