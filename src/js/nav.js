@@ -318,9 +318,6 @@ window.loadCharacters = loadCharacters;
 console.log("✅ DEBUG: NAV.JS COMPLETED");// nav.js - DEBUG VERSION
 console.log("=== NAV.JS DEBUG STARTING ===");
 
-// Global state
-let currentUserId = null;
-let currentUserEmail = null;
 
 function initializeNavigation() {
     console.log("🔍 DEBUG: Starting navigation initialization...");
