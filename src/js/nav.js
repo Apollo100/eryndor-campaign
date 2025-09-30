@@ -1,7 +1,4 @@
-// ===============================
-// Import Firebase dependencies
-// ===============================
-import { auth, db, currentUserId, currentUserEmail } from './firebase-init.js';
+// nav.js - REMOVE ALL IMPORTS at the top
 
 // ===============================
 // Navbar toggle (mobile support)
@@ -10,6 +7,8 @@ const primaryNav = document.getElementById("primary-navigation");
 const navToggle = document.querySelector(".mobile-nav-toggle");
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("nav.js loaded - auth available:", typeof window.auth !== 'undefined');
+  
   const navItemsWithSubmenu = document.querySelectorAll(".nav-item.has-submenu");
 
   const navToggle = document.getElementById("navToggle");
@@ -32,18 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const link = item.querySelector(".nav-link");
 
     link.addEventListener("click", (e) => {
-      const submenu = item.querySelector(".submenu"); // match your HTML
+      const submenu = item.querySelector(".submenu");
       if (!submenu) return;
 
-      e.preventDefault(); // stop page navigation
+      e.preventDefault();
 
       const isOpen = item.classList.contains("open");
 
-      // Close all submenus
       document.querySelectorAll(".nav-item.has-submenu.open")
         .forEach(openItem => openItem.classList.remove("open"));
 
-      // Toggle clicked one
       if (!isOpen) {
         item.classList.add("open");
       }
@@ -102,9 +99,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const email = `${username}@eryndor.local`;
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        // Use window.auth instead of auth
+        const userCredential = await window.auth.createUserWithEmailAndPassword(email, password);
 
-        await db.collection("characters").doc(userCredential.user.uid).set({
+        // Use window.db instead of db
+        await window.db.collection("characters").doc(userCredential.user.uid).set({
           name: username,
           owner: userCredential.user.uid,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
@@ -148,7 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===============================
 // Auth state tracking
 // ===============================
-auth.onAuthStateChanged(user => {
+// Use window.auth instead of auth
+window.auth.onAuthStateChanged(user => {
   const loginItem = document.getElementById("loginItem");
   const userDropdown = document.getElementById("userDropdown");
   const userNameDisplay = document.getElementById("userNameDisplay");
@@ -156,20 +156,17 @@ auth.onAuthStateChanged(user => {
   const playerOnly = document.querySelectorAll(".player-only");
 
   if (user) {
-    currentUserId = user.uid;
-    currentUserEmail = user.email;
+    window.currentUserId = user.uid;
+    window.currentUserEmail = user.email;
 
-    // Toggle login vs dropdown
     if (loginItem) loginItem.style.display = "none";
     if (userDropdown) userDropdown.style.display = "block";
 
-    // Show username
     if (userNameDisplay) {
-      userNameDisplay.textContent = currentUserEmail.split("@")[0];
+      userNameDisplay.textContent = window.currentUserEmail.split("@")[0];
     }
 
-    // Role-based links
-    if (currentUserEmail === "dm@eryndor.local") {
+    if (window.currentUserEmail === "dm@eryndor.local") {
       dmOnly.forEach(el => el.style.display = "block");
       playerOnly.forEach(el => el.style.display = "none");
     } else {
@@ -178,15 +175,14 @@ auth.onAuthStateChanged(user => {
     }
 
   } else {
-    // Reset state if logged out
-    currentUserId = null;
-    currentUserEmail = null;
+    window.currentUserId = null;
+    window.currentUserEmail = null;
 
     if (loginItem) loginItem.style.display = "block";
     if (userDropdown) userDropdown.style.display = "none";
   }
 
-  loadCharacters(); // refresh PC cards whenever auth state changes
+  loadCharacters();
 });
 
 // ===============================
@@ -195,7 +191,6 @@ auth.onAuthStateChanged(user => {
 function toggleLogin(show) {
   document.getElementById("loginModal").style.display = show ? "flex" : "none";
   
-  // Reset to login form when opening
   if (show) {
     document.getElementById('loginForm').style.display = 'flex';
     document.getElementById('createAccountForm').style.display = 'none';
@@ -223,12 +218,11 @@ async function login() {
     return;
   }
 
-  // DM login
   if (username.toLowerCase() === "dm") {
     try {
-      const userCred = await auth.signInWithEmailAndPassword("dm@eryndor.local", pass);
-      currentUserId = userCred.user.uid;
-      currentUserEmail = userCred.user.email;
+      const userCred = await window.auth.signInWithEmailAndPassword("dm@eryndor.local", pass);
+      window.currentUserId = userCred.user.uid;
+      window.currentUserEmail = userCred.user.email;
       alert("Welcome, Dungeon Master!");
       toggleLogin(false);
       return;
@@ -238,12 +232,11 @@ async function login() {
     }
   }
 
-  // Normal player login
   try {
     const email = `${username}@eryndor.local`;
-    const userCred = await auth.signInWithEmailAndPassword(email, pass);
-    currentUserId = userCred.user.uid;
-    currentUserEmail = userCred.user.email;
+    const userCred = await window.auth.signInWithEmailAndPassword(email, pass);
+    window.currentUserId = userCred.user.uid;
+    window.currentUserEmail = userCred.user.email;
 
     alert(`Welcome, ${username}!`);
     toggleLogin(false);
@@ -256,9 +249,9 @@ async function login() {
 // Logout
 // ===============================
 function logout() {
-  auth.signOut().then(() => {
-    currentUserId = null;
-    currentUserEmail = null;
+  window.auth.signOut().then(() => {
+    window.currentUserId = null;
+    window.currentUserEmail = null;
     console.log("User logged out");
     loadCharacters();
   });
@@ -271,7 +264,8 @@ function loadCharacters() {
   const pcContainer = document.getElementById("pc-container");
   if (!pcContainer) return;
 
-  db.collection("characters").onSnapshot(snapshot => {
+  // Use window.db instead of db
+  window.db.collection("characters").onSnapshot(snapshot => {
     pcContainer.innerHTML = "";
     snapshot.forEach(doc => renderPcCard(doc.id, doc.data()));
   });
@@ -295,7 +289,7 @@ function renderPcCard(id, data) {
     </p>
   `;
 
-  if (currentUserId === data.owner || currentUserEmail === "dm@eryndor.local") {
+  if (window.currentUserId === data.owner || window.currentUserEmail === "dm@eryndor.local") {
     const editBtn = document.createElement("button");
     editBtn.innerText = "Edit";
     editBtn.onclick = () => openEditModal(id, data);
@@ -305,5 +299,8 @@ function renderPcCard(id, data) {
   document.getElementById("pc-container").appendChild(card);
 }
 
-// Export functions for other modules
-export { toggleLogin, login, logout, loadCharacters };
+// Make functions globally available
+window.toggleLogin = toggleLogin;
+window.login = login;
+window.logout = logout;
+window.loadCharacters = loadCharacters;
