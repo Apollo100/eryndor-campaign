@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/CSS/style.css">
+    <link rel="stylesheet" href="/src/styles/styles.scss">
     <title>Document</title>
 </head>
 <body>
     <nav class="side-nav">
         <div class="nav-brand">
-            <img src="/Images/Eryndor_Logo.png" alt="Eryndor Logo" class="nav-logo">
+            <img src="/src/images/Eryndor_Logo.png" alt="Eryndor Logo" class="nav-logo">
         </div>
 
         <!-- Navigation Items -->
@@ -28,8 +28,8 @@
                     <i class="fas fa-chevron-down dropdown-arrow"></i>
                 </a>
                 <ul class="submenu">
-                    <li><a href="/Pages/NPCMenu/NPC-Menu.html">NPCs</a></li>
-                    <li><a href="/Pages/PCMenu/PC-Menu.html">Players</a></li>
+                    <li><a href="pages/npcs.html">NPCs</a></li>
+                    <li><a href="pages/pc.html">Players</a></li>
                 </ul>
             </li>
 
@@ -64,7 +64,7 @@
                      <li class="player-only"><a href="#"><i class="fas fa-scroll"></i> Notes</a></li>
                      <li class="player-only"><a href="#"><i class="fas fa-fire"></i> Feats / Spells</a></li>
                     <!-- DM-Only -->
-                    <li class="dm-only"><a href="/Pages/dm_pages.html"><i class="fas fa-hat-wizard"></i>DM ToolKit</a></li>
+                    <li class="dm-only"><a href="pages/dm_pages.html"><i class="fas fa-hat-wizard"></i>DM ToolKit</a></li>
                     <!-- Shared -->
                      <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>

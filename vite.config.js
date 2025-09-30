@@ -6,10 +6,10 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
-        lore: resolve(__dirname, 'src/pages/lore/worldlore.html'),
-        npcs: resolve(__dirname, 'src/pages/npcs/npcs.html'),
-        pcs: resolve(__dirname, 'src/pages/pcs/pcs.html'),
-        races: resolve(__dirname, 'src/pages/races/races.html'),
+        lore: resolve(__dirname, 'pages/worldlore.html'),
+        npcs: resolve(__dirname, 'pages/npcs.html'),
+        pcs: resolve(__dirname, 'pages/pcs.html'),
+        lore: resolve(__dirname, 'pages/worldlore.html'),
       }
     }
   },
