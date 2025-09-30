@@ -1,7 +1,7 @@
 // ===============================
 // Import Firebase dependencies
 // ===============================
-import { auth, db, currentUserId, currentUserEmail } from './firebase-config.js';
+import { auth, db, currentUserId, currentUserEmail } from './firebase-init.js';
 
 // ===============================
 // Navbar toggle (mobile support)
