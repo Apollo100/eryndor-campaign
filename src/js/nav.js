@@ -1,4 +1,7 @@
-import { auth, db, currentUserId, currentUserEmail } from './firebase-init.js';
+// ===============================
+// Import Firebase dependencies
+// ===============================
+import { auth, db, currentUserId, currentUserEmail } from './firebase-config.js';
 
 // ===============================
 // Navbar toggle (mobile support)
@@ -114,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
             strength: 10,
             dexterity: 10,
             constitution: 10,
-            intelligence: 10,  // Fixed typo: intellegince -> intelligence
+            intelligence: 10,
             wisdom: 10,
             charisma: 10
           },
@@ -145,9 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===============================
 // Auth state tracking
 // ===============================
-let currentUserId = null;
-let currentUserEmail = null;
-
 auth.onAuthStateChanged(user => {
   const loginItem = document.getElementById("loginItem");
   const userDropdown = document.getElementById("userDropdown");
@@ -304,3 +304,6 @@ function renderPcCard(id, data) {
 
   document.getElementById("pc-container").appendChild(card);
 }
+
+// Export functions for other modules
+export { toggleLogin, login, logout, loadCharacters };
