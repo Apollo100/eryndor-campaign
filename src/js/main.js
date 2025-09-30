@@ -1,4 +1,4 @@
-// main.js - DEBUG VERSION
+// main.js - Proper Vite entry point
 console.log("=== STARTING MAIN.JS ===");
 
 import { initializeApp } from 'firebase/app';
@@ -26,24 +26,38 @@ const db = getFirestore(app);
 
 console.log("Firebase initialized - auth:", typeof auth, "db:", typeof db);
 
-// Set as global variables
-window.auth = auth;
-window.db = db;
-window.currentUserId = null;
-window.currentUserEmail = null;
+// Global state
+let currentUserId = null;
+let currentUserEmail = null;
 
-console.log("Global variables set");
-
-// Test if auth is working
-console.log("Auth object test:", auth?.app?.name);
-
-// Now import other modules
-console.log("About to import nav.js");
-import('./nav.js').then(() => {
-    console.log("nav.js loaded successfully");
-}).catch(error => {
-    console.error("FAILED to load nav.js:", error);
+// Wait for DOM to be ready before importing other modules
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM loaded, initializing app...');
+    
+    try {
+        // Import other modules after DOM is ready and Firebase is initialized
+        const { default: initNav } = await import('./nav.js');
+        const { default: initPC } = await import('./pc.js');
+        const { default: initDM } = await import('./dm_user_manager.js');
+        const { default: initDND } = await import('./dnd.js');
+        const { default: initLore } = await import('./lorepage.js');
+        
+        console.log("All modules imported, initializing...");
+        
+        // Initialize modules with dependencies
+        initNav(auth, db, currentUserId, currentUserEmail);
+        initPC(auth, db, currentUserId, currentUserEmail);
+        initDM(auth, db);
+        initDND();
+        initLore();
+        
+        console.log('App fully initialized');
+    } catch (error) {
+        console.error('Failed to initialize app:', error);
+    }
 });
 
-console.log("=== MAIN.JS COMPLETED ===");
+// Export for potential use elsewhere
+export { auth, db, currentUserId, currentUserEmail };
 
+console.log("=== MAIN.JS SETUP COMPLETED ===");
