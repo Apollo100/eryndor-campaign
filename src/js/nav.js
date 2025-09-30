@@ -129,6 +129,7 @@ function initializeNavigation() {
     });
 }
 
+// Wait for DOM to be ready
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM loaded, initializing navigation...");
     
