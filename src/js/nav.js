@@ -1,6 +1,6 @@
-// nav.js - Proper Firebase Modular Syntax
+// nav.js - Proper Module Pattern with Dependency Injection
 export default function initNav(auth, db, currentUserId, currentUserEmail) {
-    console.log("Initializing nav module with Firebase...");
+    console.log("Initializing nav module...");
 
     // ===============================
     // Navbar toggle (mobile support)
@@ -9,8 +9,8 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
     const navToggle = document.querySelector(".mobile-nav-toggle");
 
     document.addEventListener("DOMContentLoaded", () => {
-        console.log("nav.js DOM loaded - auth:", typeof auth !== 'undefined');
-        
+        console.log("nav.js DOM loaded - auth available:", typeof auth !== 'undefined');
+
         const navItemsWithSubmenu = document.querySelectorAll(".nav-item.has-submenu");
 
         const navToggle = document.getElementById("navToggle");
@@ -38,13 +38,15 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
                 const submenu = item.querySelector(".submenu");
                 if (!submenu) return;
 
-                e.preventDefault();
+                e.preventDefault(); // stop page navigation
 
                 const isOpen = item.classList.contains("open");
 
+                // Close all submenus
                 document.querySelectorAll(".nav-item.has-submenu.open")
                     .forEach(openItem => openItem.classList.remove("open"));
 
+                // Toggle clicked one
                 if (!isOpen) {
                     item.classList.add("open");
                 }
@@ -103,13 +105,11 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
 
                 try {
                     const email = `${username}@eryndor.local`;
-                    // Use the injected auth parameter
                     const userCredential = await auth.createUserWithEmailAndPassword(email, password);
 
-                    // Import FieldValue for server timestamp
+                    // Import serverTimestamp for Firestore
                     const { serverTimestamp } = await import('firebase/firestore');
-                    
-                    // Use the injected db parameter
+
                     await db.collection("characters").doc(userCredential.user.uid).set({
                         name: username,
                         owner: userCredential.user.uid,
@@ -154,7 +154,6 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
     // ===============================
     // Auth state tracking
     // ===============================
-    // Use the injected auth parameter
     auth.onAuthStateChanged(user => {
         const loginItem = document.getElementById("loginItem");
         const userDropdown = document.getElementById("userDropdown");
@@ -163,17 +162,20 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
         const playerOnly = document.querySelectorAll(".player-only");
 
         if (user) {
-            // Update the injected variables
+            // Update the state variables (passed by reference from main.js)
             currentUserId = user.uid;
             currentUserEmail = user.email;
 
+            // Toggle login vs dropdown
             if (loginItem) loginItem.style.display = "none";
             if (userDropdown) userDropdown.style.display = "block";
 
+            // Show username
             if (userNameDisplay) {
                 userNameDisplay.textContent = currentUserEmail.split("@")[0];
             }
 
+            // Role-based links
             if (currentUserEmail === "dm@eryndor.local") {
                 dmOnly.forEach(el => el.style.display = "block");
                 playerOnly.forEach(el => el.style.display = "none");
@@ -183,7 +185,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
             }
 
         } else {
-            // Reset the injected variables
+            // Reset state if logged out
             currentUserId = null;
             currentUserEmail = null;
 
@@ -191,7 +193,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
             if (userDropdown) userDropdown.style.display = "none";
         }
 
-        loadCharacters();
+        loadCharacters(); // refresh PC cards whenever auth state changes
     });
 
     // ===============================
@@ -202,6 +204,7 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
         if (loginModal) {
             loginModal.style.display = show ? "flex" : "none";
             
+            // Reset to login form when opening
             if (show) {
                 const loginForm = document.getElementById('loginForm');
                 const createAccountForm = document.getElementById('createAccountForm');
@@ -281,7 +284,6 @@ export default function initNav(auth, db, currentUserId, currentUserEmail) {
         const pcContainer = document.getElementById("pc-container");
         if (!pcContainer) return;
 
-        // Use the injected db parameter
         db.collection("characters").onSnapshot(snapshot => {
             pcContainer.innerHTML = "";
             snapshot.forEach(doc => renderPcCard(doc.id, doc.data()));
