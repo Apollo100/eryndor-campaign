@@ -1,0 +1,864 @@
+/* ========================================================================
+   ERYNDOR CAMPAIGN STYLESHEET
+   Organized with Mobile-First Approach & CSS Custom Properties
+   Sections:
+   1. CSS Variables & Theming
+   2. Base Reset & Typography
+   3. Layout & Grid System
+   4. Navigation Components
+   5. Card Components
+   6. Modal & Overlay Components
+   7. Interactive Elements
+   8. Utility Classes
+   9. Media Queries & Responsive Design
+======================================================================== */
+
+/* ------------------------------------------------------------------------
+   1. CSS VARIABLES & THEMING SYSTEM
+   - Global design tokens for consistent theming
+   - Organized by semantic purpose
+------------------------------------------------------------------------ */
+
+:root {
+  /* ===== COLOR PALETTE ===== */
+  /* Primary Brand Colors */
+  --clr-primary: #d4af37;
+  --clr-primary-dark: #b8860b;
+  --clr-primary-light: #e9c46a;
+  
+  /* Secondary Colors */
+  --clr-secondary: #7a1f1f;
+  --clr-secondary-dark: #5a1515;
+  --clr-secondary-light: #9a2f2f;
+  
+  /* Accent & Action Colors */
+  --clr-accent: #e25822;
+  --clr-accent-dark: #c44515;
+  --clr-accent-light: #f06c3a;
+  
+  /* Neutral Colors */
+  --clr-bg: #0a0a0a;
+  --clr-surface: #2e3a48;
+  --clr-surface-light: #3a4a5a;
+  --clr-surface-dark: #1e2a38;
+  --clr-muted: #5a7d48;
+  --clr-neutral: #444444;
+  --clr-text: #f5f2e9;
+  --clr-text-muted: #bdae88;
+  
+  /* Semantic Colors */
+  --clr-success: #5a7d48;
+  --clr-warning: #d4af37;
+  --clr-error: #7a1f1f;
+  --clr-info: #2e3a48;
+
+  /* ===== TYPOGRAPHY ===== */
+  --font-header: "Cinzel", serif;
+  --font-body: "Merriweather", serif;
+  --font-ui: system-ui, -apple-system, sans-serif;
+  
+  /* Font Sizes - Mobile First */
+  --fs-xs: 0.75rem;    /* 12px */
+  --fs-sm: 0.875rem;   /* 14px */
+  --fs-base: 1rem;     /* 16px */
+  --fs-lg: 1.125rem;   /* 18px */
+  --fs-xl: 1.25rem;    /* 20px */
+  --fs-2xl: 1.5rem;    /* 24px */
+  --fs-3xl: 1.875rem;  /* 30px */
+  --fs-4xl: 2.25rem;   /* 36px */
+  
+  /* Font Weights */
+  --fw-light: 300;
+  --fw-normal: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+
+  /* ===== LAYOUT & SPACING ===== */
+  /* Spacing Scale */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-2xl: 3rem;     /* 48px */
+  
+  /* Layout Measures */
+  --nav-width: 250px;
+  --nav-width-collapsed: 70px;
+  --container-max-width: 1200px;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+
+  /* ===== TRANSITIONS & ANIMATIONS ===== */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* ===== SHADOWS ===== */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.4);
+  
+  /* ===== Z-INDEX LAYERS ===== */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-modal: 1030;
+  --z-popover: 1040;
+  --z-tooltip: 1050;
+}
+
+/* ------------------------------------------------------------------------
+   2. BASE RESET & TYPOGRAPHY
+   - Modern CSS reset
+   - Typography foundation
+------------------------------------------------------------------------ */
+
+/* Import External Dependencies */
+@import "https://unpkg.com/open-props";
+@import "https://unpkg.com/open-props/normalize.min.css";
+
+/* Modern CSS Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  color: var(--clr-text);
+  background-color: var(--clr-bg);
+  background-image: url("/Images/Design-removebg-preview.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+  color: var(--clr-primary);
+  letter-spacing: 1px;
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+}
+
+h1 { font-size: var(--fs-4xl); font-weight: var(--fw-bold); }
+h2 { font-size: var(--fs-3xl); font-weight: var(--fw-semibold); }
+h3 { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); }
+h4 { font-size: var(--fs-xl); font-weight: var(--fw-medium); }
+
+p {
+  margin-bottom: var(--space-md);
+  line-height: 1.6;
+}
+
+a {
+  color: var(--clr-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--clr-accent);
+}
+
+/* ------------------------------------------------------------------------
+   3. LAYOUT & GRID SYSTEM
+   - Container system
+   - Flexbox utilities
+   - Grid layouts
+------------------------------------------------------------------------ */
+
+/* Container System */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.container-wide {
+  max-width: 1400px;
+}
+
+/* Flexbox Utilities */
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-gap-sm { gap: var(--space-sm); }
+.flex-gap-md { gap: var(--space-md); }
+.flex-gap-lg { gap: var(--space-lg); }
+
+/* Grid System */
+.grid {
+  display: grid;
+}
+
+.grid-auto-fit {
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+}
+
+.grid-auto-fill {
+  grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+}
+
+.grid-gap-sm { gap: var(--space-sm); }
+.grid-gap-md { gap: var(--space-md); }
+.grid-gap-lg { gap: var(--space-lg); }
+
+/* Main Content Area */
+.main-content {
+  margin-left: var(--nav-width);
+  padding: var(--space-md) 0;
+  transition: margin-left var(--transition-base);
+  min-height: 100vh;
+}
+
+/* ------------------------------------------------------------------------
+   4. NAVIGATION COMPONENTS
+   - Side navigation
+   - Mobile navigation
+   - Dropdown menus
+------------------------------------------------------------------------ */
+
+.side-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--nav-width);
+  background: var(--clr-surface);
+  color: var(--clr-text);
+  box-shadow: var(--shadow-lg);
+  transition: width var(--transition-base);
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation Branding */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-md);
+  border-bottom: 1px solid var(--clr-neutral);
+}
+
+.nav-logo {
+  width: 100%;
+  max-width: 10em;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+}
+
+.brand-text {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  color: var(--clr-primary);
+  white-space: nowrap;
+}
+
+/* Navigation Links */
+.nav-list {
+  list-style: none;
+  padding: var(--space-md) 0;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  border-left: 3px solid transparent;
+  transition: all var(--transition-base);
+  color: var(--clr-text);
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: var(--clr-neutral);
+  border-left: 3px solid var(--clr-accent);
+}
+
+.nav-link i:first-child {
+  width: 24px;
+  margin-right: var(--space-md);
+  text-align: center;
+  font-size: var(--fs-lg);
+  color: var(--clr-primary);
+}
+
+.link-text {
+  white-space: nowrap;
+  transition: opacity var(--transition-base);
+}
+
+/* Dropdown System */
+.has-submenu {
+  position: relative;
+}
+
+.dropdown-arrow {
+  margin-left: auto;
+  transition: transform var(--transition-base);
+}
+
+.submenu {
+  list-style: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-base);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.has-submenu.open .submenu {
+  max-height: 300px;
+}
+
+.has-submenu.open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.submenu-link {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-2xl);
+  color: var(--clr-text);
+  text-decoration: none;
+  transition: background-color var(--transition-base);
+}
+
+.submenu-link:hover {
+  background-color: var(--clr-neutral);
+}
+
+/* Collapsed State */
+.side-nav.collapsed {
+  width: var(--nav-width-collapsed);
+}
+
+.side-nav.collapsed .brand-text,
+.side-nav.collapsed .link-text,
+.side-nav.collapsed .dropdown-arrow {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.side-nav.collapsed .nav-link i:first-child {
+  margin-right: 0;
+  font-size: var(--fs-xl);
+}
+
+.side-nav.collapsed ~ .main-content {
+  margin-left: var(--nav-width-collapsed);
+}
+
+/* Mobile Navigation */
+.nav-toggle {
+  display: none;
+  position: fixed;
+  top: var(--space-md);
+  left: var(--space-md);
+  z-index: var(--z-modal);
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--clr-surface);
+  color: var(--clr-text);
+  border: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-base);
+}
+
+/* ------------------------------------------------------------------------
+   5. CARD COMPONENTS
+   - Base card styles
+   - NPC/PC cards
+   - Kingdom cards
+   - Card variants
+------------------------------------------------------------------------ */
+
+/* Base Card Styles */
+.card {
+  background: var(--clr-surface);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  padding: var(--space-lg);
+  background: linear-gradient(135deg, var(--clr-secondary), var(--clr-primary));
+  color: var(--clr-text);
+}
+
+.card-body {
+  padding: var(--space-lg);
+}
+
+.card-title {
+  font-size: var(--fs-2xl);
+  font-family: var(--font-header);
+  margin-bottom: var(--space-sm);
+}
+
+.card-subtitle {
+  font-size: var(--fs-base);
+  opacity: 0.9;
+}
+
+/* Tag System */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.tag {
+  background: var(--clr-primary);
+  color: var(--clr-text);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: 20px;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+}
+
+/* NPC/PC Card Variants */
+.npc-card, .pc-card {
+  cursor: pointer;
+  margin: var(--space-lg);
+}
+
+.npc-card.expanded .card-details,
+.pc-card.expanded .card-details {
+  max-height: 1000px;
+}
+
+.card-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--transition-slow);
+}
+
+.detail-section {
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--clr-neutral);
+}
+
+.detail-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Kingdom Card Variants */
+.kingdom-card {
+  border: 1px solid transparent;
+  margin: var(--space-lg);
+}
+
+.kingdom-card:hover {
+  border-color: var(--clr-primary);
+}
+
+.kingdom-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kingdom-crest {
+  font-size: var(--fs-3xl);
+}
+
+/* Kingdom Color Variants */
+.kingdom-card.valor .card-header { background: linear-gradient(135deg, #8b2222, #ffd700); }
+.kingdom-card.aleri .card-header { background: linear-gradient(135deg, #228b22, #c0c0c0); }
+.kingdom-card.draemir .card-header { background: linear-gradient(135deg, #4b4b4b, #013220); }
+/* ... other kingdom variants ... */
+
+/* ------------------------------------------------------------------------
+   6. MODAL & OVERLAY COMPONENTS
+   - Modal base styles
+   - Authentication modals
+   - Map modals
+------------------------------------------------------------------------ */
+
+/* Base Modal Styles */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--clr-surface);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: modalFadeIn var(--transition-base);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  padding: var(--space-lg);
+  border-bottom: 2px solid var(--clr-primary);
+  background: linear-gradient(135deg, var(--clr-surface), var(--clr-surface-dark));
+}
+
+.modal-title {
+  font-size: var(--fs-2xl);
+  color: var(--clr-primary-light);
+  margin: 0;
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-lg);
+  background: none;
+  border: none;
+  font-size: var(--fs-2xl);
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  transition: color var(--transition-base);
+}
+
+.modal-close:hover {
+  color: var(--clr-primary);
+}
+
+.modal-body {
+  padding: var(--space-lg);
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  color: var(--clr-text-muted);
+  font-weight: var(--fw-medium);
+}
+
+.form-input {
+  width: 100%;
+  padding: var(--space-md);
+  background: var(--clr-surface-dark);
+  border: 1px solid var(--clr-neutral);
+  border-radius: var(--border-radius);
+  color: var(--clr-text);
+  font-size: var(--fs-base);
+  transition: all var(--transition-base);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--clr-primary);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+}
+
+/* ------------------------------------------------------------------------
+   7. INTERACTIVE ELEMENTS
+   - Buttons
+   - Toggles
+   - Filters
+------------------------------------------------------------------------ */
+
+/* Button System */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-lg);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--clr-primary), var(--clr-primary-dark));
+  color: var(--clr-text);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--clr-secondary), var(--clr-secondary-dark));
+  color: var(--clr-text);
+}
+
+.btn-full {
+  width: 100%;
+}
+
+/* Toggle System */
+.toggle-group {
+  display: flex;
+  background: var(--clr-surface-dark);
+  border-radius: var(--border-radius);
+  padding: var(--space-xs);
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  background: transparent;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-base);
+}
+
+.toggle-btn.active {
+  background: var(--clr-primary);
+  color: var(--clr-text);
+}
+
+/* Filter System */
+.filters {
+  background: var(--clr-surface);
+  padding: var(--space-lg);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--space-lg);
+}
+
+.filter-group {
+  flex: 1;
+  min-width: min(200px, 100%);
+}
+
+.filter-label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-weight: var(--fw-bold);
+  color: var(--clr-primary);
+}
+
+/* ------------------------------------------------------------------------
+   8. UTILITY CLASSES
+   - Spacing utilities
+   - Text utilities
+   - Display utilities
+------------------------------------------------------------------------ */
+
+/* Spacing Utilities */
+.m-0 { margin: 0; }
+.mt-sm { margin-top: var(--space-sm); }
+.mb-lg { margin-bottom: var(--space-lg); }
+.p-md { padding: var(--space-md); }
+.py-lg { padding: var(--space-lg) 0; }
+
+/* Text Utilities */
+.text-center { text-align: center; }
+.text-primary { color: var(--clr-primary); }
+.text-muted { color: var(--clr-text-muted); }
+.text-sm { font-size: var(--fs-sm); }
+.text-lg { font-size: var(--fs-lg); }
+
+/* Display Utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hidden { display: none; }
+.block { display: block; }
+.flex { display: flex; }
+
+/* ------------------------------------------------------------------------
+   9. MEDIA QUERIES & RESPONSIVE DESIGN
+   - Mobile-first breakpoints
+   - Component-specific responsive adjustments
+------------------------------------------------------------------------ */
+
+/* Tablet Devices (768px and up) */
+@media (min-width: 768px) {
+  :root {
+    --fs-base: 1.05rem;
+  }
+  
+  .npcs-grid, .pc-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  .filters {
+    flex-direction: row;
+  }
+}
+
+/* Desktop Devices (1024px and up) */
+@media (min-width: 1024px) {
+  :root {
+    --fs-base: 1.1rem;
+  }
+  
+  .container {
+    padding: 0 var(--space-lg);
+  }
+}
+
+/* Mobile Devices (767px and down) */
+@media (max-width: 767px) {
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .side-nav {
+    width: var(--nav-width);
+    transform: translateX(-100%);
+    transition: transform var(--transition-base);
+  }
+  
+  .side-nav.open {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .side-nav.collapsed ~ .main-content {
+    margin-left: 0;
+  }
+  
+  .card {
+    margin: var(--space-sm);
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: var(--space-md) auto;
+  }
+}
+
+/* Large Mobile Devices (480px and down) */
+@media (max-width: 480px) {
+  :root {
+    --fs-3xl: 1.5rem;
+    --fs-4xl: 1.75rem;
+  }
+  
+  .card-header {
+    padding: var(--space-md);
+  }
+  
+  .card-body {
+    padding: var(--space-md);
+  }
+  
+  .tags {
+    gap: var(--space-xs);
+  }
+  
+  .tag {
+    font-size: var(--fs-xs);
+    padding: var(--space-xs) var(--space-sm);
+  }
+}
+
+/* High-DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,20 @@
+.page-layout {
+    display: flex;
+    height: 100vh;
+}
+
+
+.lore-content {
+    flex: 1;
+    padding: $space-lg;
+    overflow-y: auto;
+}
+
+.main-content {
+    margin-left: $nav-width;
+    padding: $space-sm;
+}
+
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }

@@ -1,0 +1,15 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Pretty URLs: /slug → /slug.html
+[[redirects]]
+  from = "/:page"
+  to = "/:page.html"
+  status = 200
+
+# Home
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200

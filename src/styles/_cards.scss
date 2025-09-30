@@ -1,0 +1,175 @@
+.kingdom-card {
+    background: $clr-surface;
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+    margin: $space-sm;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: $clr-surface-dark;
+        padding: $space-sm $space-md;
+
+
+        .card-title { font-size: 1.1rem; }
+        .kingdom-crest i {
+            font-size: 1.2rem;
+            background: darken($clr-surface-dark, 10%);
+            padding: $space-sm;
+            border: none;
+            border-radius: 20px; 
+        }
+    }
+
+
+    .card-body {
+        padding: $space-md;
+        font-size: 0.9rem;
+        line-height: 1.3;
+        display: none;
+
+        &.expanded {
+            display: block;
+        }
+    }
+
+
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: $space-xs;
+        margin-bottom: $space-sm;
+
+
+        .tag {
+        background: $clr-border;
+        color: $clr-text;
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        }
+    }
+
+
+    .kingdom-description { margin: $space-sm 0; }
+
+
+    .detail-section {
+        margin: $space-sm 0;
+
+
+        h4 {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            margin-bottom: $space-xs;
+
+
+            i { font-size: 0.85em; margin-right: 0.25rem; }
+        }
+
+
+        p, ul {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+
+        ul {
+            padding-left: 1rem;
+            list-style: disc;
+        }
+    }
+
+    &.valor {
+        .kingdom-crest {
+            color: $valor-color;
+        }
+    }
+    &.aleri {
+        .kingdom-crest {
+            color: $aleri-color;
+        }
+    }
+    &.draemir {
+        .kingdom-crest {
+            color: $draemir-color;
+        }
+    }
+    &.serathis {
+        .kingdom-crest {
+            color: $serathis-color;
+        }
+    }
+    &.thryssia {
+        .kingdom-crest {
+            color: $thryssia-color;
+        }
+    }
+    &.kaelvyrn {
+        .kingdom-crest {
+            color: $kaelvyrn-color;
+        }
+    }
+    &.veyra {
+        .kingdom-crest {
+            color: $veyra-color;
+        }
+    }
+    &.myrrdain {
+        .kingdom-crest {
+            color: $myrrdain-color;
+        }
+    }
+    &.norveth {
+        .kingdom-crest {
+            color: $norveth-color;
+        }
+    }
+    &.gilded-league {
+        .kingdom-crest {
+            color: $gilded-league-color;
+        }
+    }
+    &.sugarspire {
+        .kingdom-crest {
+            color: $sugarspire-color;
+        }
+    }
+}
+
+.kingdom-card-container {
+    margin-top: $space-md;
+    height: 30vh;
+    overflow-y: auto;
+}
+
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: $space-md;
+}
+
+.npc-card {
+    @extend .kingdom-card;
+    margin: $space-lg;
+    padding: $space-lg;
+    border-top: 4px solid $clr-border;
+
+    .npc-card-body {
+        display: none;
+    }
+
+    &.expanded {
+        .npc-card-body {
+            display: block;
+        }
+    }
+}

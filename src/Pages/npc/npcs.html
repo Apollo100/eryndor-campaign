@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/styles/styles.scss">
+    <title>NPC-Menu</title>
+</head>
+<body class="NPC-Page">
+    <nav class="side-nav">
+        <div class="nav-brand">
+            <img src="/src/images/Eryndor_Logo.png" alt="Eryndor Logo" class="nav-logo">
+        </div>
+
+        <!-- Navigation Items -->
+        <ul class="nav-list">
+            <li class="nav-item">
+                <a href="/index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span class="link-text">Home</span>
+                </a>
+            </li>
+
+            <li class="nav-item has-submenu">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span class="link-text">Characters</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="/src/Pages/npc/npcs.html">NPCs</a></li>
+                    <li class="submenu-item"><a href="/src/Pages/pc/pc.html">Players</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item has-submenu">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-book"></i>
+                    <span class="link-text">Lore</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>  
+                </a>
+                <ul class="submenu">
+                    <li class="submenu-item"><a href="#">The Peoples of Eryndor</a></li>
+                    <li class="submenu-item"><a href="/src/Pages/lore/worldlore.html">World Lore</a></li>
+                </ul>
+            </li>
+
+            <li class="nav-item" id="loginItem">
+                <a href="#" onclick="toggleLogin(true)" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span class="link-text">Login</span>
+                </a>
+            </li>
+
+            <li class="nav-item has-submenu" id="userDropdown" style="display: none;">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="link-text" id="userNameDisplay">Player</span>
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                </a>
+                <ul class="submenu">
+                    <!-- Player Only -->
+                     <li class="player-only"><a href="#"><i class="fas fa-backpack"></i> Inventory</a></li>
+                     <li class="player-only"><a href="#"><i class="fas fa-scroll"></i> Notes</a></li>
+                     <li class="player-only"><a href="#"><i class="fas fa-fire"></i> Feats / Spells</a></li>
+                    <!-- DM-Only -->
+                    <li class="dm-only"><a href="/src/Pages/dm-toolkit/dm_pages.html"><i class="fas fa-hat-wizard"></i>DM ToolKit</a></li>
+                    <!-- Shared -->
+                     <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Mobile Menu Toggle -->
+    <div class="nav-toggle" id="navToggle">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+
+    <main class="main-content">
+        <!---------------------------------------------Cards-------------------------------------------------------->
+        <div class="container">
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="search"><i class="fas fa-search"></i>Search</label>
+                    <input type="text" id="search" placeholder="Name, Description, Keywords...">
+                </div>
+                <div class="filter-group">
+                    <label for="location"><i class="fas fa-map-marker-alt"></i> Location</label>
+                    <select id="location">
+                        <option value="valor">Valor</option>
+                        <option value="aleri">Aleri</option>
+                        <option value="gilded-league">Gilded League</option>
+                        <option value="serathis">Serathis</option>
+                        <option value="sugar-spire">Sugar Spire</option>
+                        <option value="veyra">Veyra</option>
+                        <option value="myrrdain">Myrrdain</option>
+                        <option value="kaelvyrn">Kaelvyrn</option>
+                        <option value="norveth">Norveth</option>
+                        <option value="draemir">Draemir</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="role"><i class="fas fa-user-tag"></i> Primary Role</label>
+                    <select id="role">
+                        <option value="">All Roles</option>
+                        <option value="leader">Leader</option>
+                        <option value="duke">Duke</option>
+                        <option value="admiral">Admiral</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="alignment"><i class="fas fa-scale-balanced"></i> Alignmet</label>
+                    <select id="alignment">
+                        <option value="">All Alignments</option>
+                        <option value="good">Good</option>
+                        <option value="neutral">Neutral</option>
+                        <option value="evil">Evil</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="npcs-grid">
+    <!---------------------------------------------Valor-------------------------------------------------------->
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Aldric Flamereign</h2>
+                    <div class="npc-race-class">The Iron Regent</div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Valor</span>
+                        <span class="npc-tag">Lawful Neutral</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        The rightful Emperor of the human Empire of Valor.
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>Tall and broad shouldered, who has the physique of a career soldier who has not let the comforts of rulership make him soft.
+                                His hair, once likely sun-bleached, is now a severe, short-cropped steel grey, a legacy of stress and responsibility. His most striking feature is his eyes: the cold, piercing grey of a winter sky, capable of silencing a war council with a single glance. He is never seen without the Crown of Cinders, a simple and brutal circlet of blackened iron shaped like a lion's mane, with two small, ever burning flames flickering where the beast eyes should be. He favors functional, imposing plate armor, and his greatsword "Oathkeeper" is always at his side.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>16(+3)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>13(+1)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>17(+3)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!---------------------------------------------Aleri-------------------------------------------------------->
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Serion Vaelaris</h2>
+                    <div class="npc-race-class">Elf Ruler of Aleri</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Aleri</span>
+                        <span class="npc-tag">Lawful Neutral</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        The Architect of Aleri
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                A tall, silver-haired elf draped in flowing azure and white robes, Serion wears a crown shaped like soaring wings of silver. His eyes are pale as open skies, and the winds seem to carry his words farther than they should. He projects freedom, but beneath the charm is a hard strategist.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>16(+3)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>18(+4)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!---------------------------------------------Draemir-------------------------------------------------------->
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Hroger Blackiron</h2>
+                    <div class="npc-race-class">Dwarven Ruler of Draemir</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Draemir</span>
+                        <span class="npc-tag">Lawful Neutral</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        Bear-Lord of Draemir
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                Unlike any dwarf before him, Hrogar stands nearly the height of a man, his broad frame a strange echo of human stature. His jet-black hair falls long and unbound, and his chin is bare — an unthinkable sight in dwarven culture. This has sparked whispers that he is “stone-marked,” shaped differently by Thorne for a purpose. He carries the rune-etched Maul of the Stonefather, its head cracked but still mighty. His presence is commanding yet unsettling, embodying both dwarven resilience and otherness.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>20(+5)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>11(+0)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>15(+2)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>16(+3)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!---------------------------------------------Serathis-------------------------------------------------------->
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Lysandra Tideborne</h2>
+                    <div class="npc-race-class">Elven Queen of Serathis</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Serathis</span>
+                        <span class="npc-tag">Neutral Good</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        Storm Queen of Serathis
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                An elegant sea-elf draped in flowing silks of aquamarine, Lysandra wears the Crown of the Eternal Regent, a silver circlet studded with pearls that shimmer like moonlight on waves. Her voice is calm but carries the weight of tides.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>16(+3)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>16(+3)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    <!---------------------------------------------Thryssia-------------------------------------------------------->
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Kaelor Duskbane</h2>
+                    <div class="npc-race-class">Human Ruler of Thryssia</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Thryssia</span>
+                        <span class="npc-tag">Neutral</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        The Shifting Lord of Thryssia
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                Pale-skinned, with ever-shifting features as though his face is never fixed. His eyes flicker between colors, reflecting the unstable power of transmutation. His robes shimmer with runes that constantly reconfigure themselves.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>9(-1)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>15(+2)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>20(+5)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>112(+1)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>16(+3)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Maltheris Veythros</h2>
+                    <div class="npc-race-class">Elven Ruler of Kaelvyrn</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Kaelvyrn</span>
+                        <span class="npc-tag">Neutral</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        The Shifting Lord of Thryssia
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                Pale-skinned, with ever-shifting features as though his face is never fixed. His eyes flicker between colors, reflecting the unstable power of transmutation. His robes shimmer with runes that constantly reconfigure themselves.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>9(-1)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>15(+2)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>20(+5)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>16(+3)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Caelen Sunshield</h2>
+                    <div class="npc-race-class">Human Ruler of Veyra</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Veyra</span>
+                        <span class="npc-tag">Lawful Good</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        The Dawn's Bastion
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                Broad-shouldered and clad in golden plate that glimmers like sunlight, Caelen’s presence feels like a wall of light itself. His short blond hair is streaked with white, his piercing eyes unblinking. The Shield of Solareon, a radiant artifact of Seraphine, rests at his side — said to blind shadowbeasts on sight.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>20(+5)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>18(+4)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Merelith Quillborn</h2>
+                    <div class="npc-race-class">Elf Ruler of Myrrdain</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Myrrdain</span>
+                        <span class="npc-tag">Neutral</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        Keeper of The Infinite Library
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                A frail elven woman draped in blue and silver robes, her hands are always ink-stained. Her eyes glow faintly with aether, as if she has read too deeply into the Weave. She carries the Quill of Endless Script, a relic that records everything she says into living parchment.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>8(-1)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>22(+6)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>14(+2)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Rhal Freefang</h2>
+                    <div class="npc-race-class">Demihuman Clan Leader</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Norveth</span>
+                        <span class="npc-tag">Chaotic Good</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        The Steel-Jawed Liberator
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                A towering lionborn demihuman, nearly seven feet tall, with a mane like a stormcloud and golden eyes that burn with fury. His lower jaw is a grotesque-yet-powerful forged plate of steel, forced upon him during his days as a pit fighter slave. Instead of breaking him, it made him a legend. His roar now echoes like a warhorn of metal and thunder. His body is crisscrossed with scars, each one a mark of survival.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>22(+6)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>15(+2)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>18(+4)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="npc-card card">
+                <div class="npc-card-header">
+                    <h2 class="npc-name">Selvar Marrowgold</h2>
+                    <div class="npc-race-class">Half-Elf Leader of The Gilded League</div>
+                </div>
+                
+                <div class="npc-card-body">
+                    <div class="npc-tags">
+                        <span class="npc-tag">Gilded League</span>
+                        <span class="npc-tag">Neutral Evil</span>
+                        <span class="npc-tag">Leader</span>
+                    </div>
+                    
+                    <div class="npc-description">
+                        High Treasurer of The League
+                    </div>
+                    
+                    <div class="npc-details">
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-file-alt"></i> Description</h4>
+                            <p>
+                                A sharp-eyed half-elf in robes woven with gold thread, his every finger weighed with rings. He wears the Ledger Crown, a circlet that records all debts owed to him. Smiling, calculating, merciless when profit is on the line.
+                            </p>
+                        </div>
+                        <div class="npc-detail-section">
+                            <h4><i class="fas fa-chart-bar"></i> Stats</h4>
+                            <div class="npc-stats">
+                                <div class="npc-stat"><span>STR:</span><span>10(+0)</span></div>
+                                <div class="npc-stat"><span>DEX:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>CON:</span><span>14(+2)</span></div>
+                                <div class="npc-stat"><span>INT:</span><span>18(+4)</span></div>
+                                <div class="npc-stat"><span>WIS:</span><span>12(+1)</span></div>
+                                <div class="npc-stat"><span>CHA:</span><span>20(+5)</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!----------------------------- Login Modal ------------------------------------------>
+    <div id="loginModal" class="modal" style="display: none;">
+        <div class="modal-header">
+            <h2 class="modal-title">Adventurer's Login</h2>
+            <div class="modal-close" onclick="toggleLogin(false)"><i class="fas fa-times"></i></div>
+
+            <div class="auth-toggle">
+                <button class="auth-toggle-btn active" id="loginToggle">Login</button>
+                <button class="auth-toggle-btn" id="createAccountToggle">Register</button>
+
+            </div>
+        </div>
+
+        <div class="modal-content">
+
+            <!-- Login Form -->
+            <form id="loginForm">
+
+                <div class="form-group">
+
+                    <label for="username" class="form-label">Character Name</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter Username" required>
+                    
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password" class="form-label">Secret Passphrase</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter Your Secret Passphrase" required>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary" onclick="login()"><i class="fas fa-dragon"></i>Enter The Realm</button>
+            </form>
+
+            <!-- Registration Form -->
+            <form id="createAccountForm">
+
+                <div class="form-group">
+                    <label for="newUsername" class="form-label">Character Name</label>
+                    <input type="text" id="newUsername" class="form-input" placeholder="Name Your Character" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword" class="form-label">Secret Passphrase</label>
+                    <input type="password" id="newPassword" class="form-input" placeholder="Create A Secure Passphrase" required>
+                    <p class="password-requirements">Password Must Be At Least 6 Characters</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" placeholder="Reapeat Your Passphrase" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary"><i class="fas fa-scroll"></i>Create Character</button>
+
+            </form>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+
+                <p>Seek the Dungeon Master if you've forgotten your passphrase</p>
+                <p>Need Assistance? <a href="#" class="footer-link">Send A Raven</a></p>
+
+            </div>
+        </div>
+    </div>
+</body>     
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<!-- Our init + logic -->
+<script src="/src/js/firebase-init.js"></script>
+<script src="/src/js/dnd.js"></script>
+<script src="/src/js/nav.js"></script>
+
+<script src="https://kit.fontawesome.com/7731291074.js" crossorigin="anonymous"></script>
+</html>
