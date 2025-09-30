@@ -1,3 +1,5 @@
+import { auth, db, currentUserId, currentUserEmail } from './main.js';
+
 // ===============================
 // Navbar toggle (mobile support)
 // ===============================

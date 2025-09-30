@@ -1,3 +1,5 @@
+import { auth, db  } from './main.js';
+
 const svg = document.getElementById("mapSVG");
 let isPanning = false;
 let startX, startY;

@@ -1,4 +1,8 @@
+import { auth, db } from './main.js';
+
 document.addEventListener("DOMContentLoaded", () => {
+
+
     const dmEmail = "dm@eryndor.local";
 
     function showTab(id){
@@ -42,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = `${username}@eryndor.local`;
 
         try{
-            await aut.createUserWithEmailAndPassword(email, pass);
+            await auth.createUserWithEmailAndPassword(email, pass);
             alert(`Account Created: ${username}`);
             loadAccounts();
         }catch (err){

@@ -1,3 +1,5 @@
+import { auth, db, currentUserId, currentUserEmail } from './main.js';
+
 document.addEventListener("DOMContentLoaded", function() {
   // Toggle Card Expansion
   const cards = document.querySelectorAll('.npc-card');

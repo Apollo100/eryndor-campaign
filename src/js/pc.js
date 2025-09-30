@@ -1,3 +1,5 @@
+import { auth, db, currentUserId, currentUserEmail } from './main.js';
+
 const pcContainer = document.getElementById("pc-container");
 
 // Watch auth state
