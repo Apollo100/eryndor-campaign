@@ -1,4 +1,4 @@
-import { auth, db, currentUserId, currentUserEmail } from './main';
+import { auth, db, currentUserId, currentUserEmail } from './firebase-init.js';
 
 // ===============================
 // Navbar toggle (mobile support)
