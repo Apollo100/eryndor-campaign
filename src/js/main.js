@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFireStore } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 
 // --- Firebase Config ---
 const firebaseConfig = {
@@ -13,9 +13,9 @@ const firebaseConfig = {
 };
 
 // --- Initialize Firebase ---
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const auth = auth();
+const db = firestore();
 
 let currentUserId = null;
 let currentUserEmail = null;
