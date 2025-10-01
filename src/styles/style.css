@@ -116,10 +116,6 @@
    - Typography foundation
 ------------------------------------------------------------------------ */
 
-/* Import External Dependencies */
-@import "https://unpkg.com/open-props";
-@import "https://unpkg.com/open-props/normalize.min.css";
-
 /* Modern CSS Reset */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -138,7 +134,6 @@ body {
   line-height: 1.6;
   color: var(--clr-text);
   background-color: var(--clr-bg);
-  background-image: url("/Images/Design-removebg-preview.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -342,6 +337,7 @@ a:hover {
   overflow: hidden;
   transition: max-height var(--transition-base);
   background-color: rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 .has-submenu.open .submenu {
@@ -494,9 +490,22 @@ a:hover {
 }
 
 /* Kingdom Card Variants */
+.kingdom-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, min-max(220px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  height: 33.3vh;
+  overflow-y: auto;
+  padding: var(--space-sm);
+}
+
 .kingdom-card {
-  border: 1px solid transparent;
-  margin: var(--space-lg);
+  background: var(--clr-neutral);
+  border: 2px solid transparent;
+  border-radius: var(--border-radius);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
 }
 
 .kingdom-card:hover {
@@ -507,10 +516,23 @@ a:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-radius: var(--border-radius);
 }
 
 .kingdom-crest {
   font-size: var(--fs-3xl);
+}
+
+.kingdom-card-body {
+  display: none;
+}
+
+.kingdom-card-body.expanded {
+  display: block;
+}
+
+.detail-section {
+  border-bottom: 1px dotted var(--clr-text);
 }
 
 /* Kingdom Color Variants */
@@ -518,6 +540,57 @@ a:hover {
 .kingdom-card.aleri .card-header { background: linear-gradient(135deg, #228b22, #c0c0c0); }
 .kingdom-card.draemir .card-header { background: linear-gradient(135deg, #4b4b4b, #013220); }
 /* ... other kingdom variants ... */
+
+#kingdoms {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem auto;
+  max-width: 1600px;
+  padding: 1rem;
+}
+
+.map-container {
+  margin: var(--space-md);
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  width: 100%;
+  justify-content: center;
+
+  border: 2px solid var(--clr-primary-dark);
+  background: var(--clr-neutral);
+  padding: var(--space-md);
+}
+
+.map-svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--border-radius);
+}
+
+.kingdom-path {
+  fill: #ccc; /* neutral base */
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.kingdom-path:hover {
+  filter: drop-shadow(0 0 10px currentColor);
+}
+
+/* Heraldic hover colors */
+#k-valor:hover   { fill: #d62828; color: #d62828; } /* red */
+#k-aleri:hover   { fill: #1d3557; color: #1d3557; } /* deep blue */
+#k-draemir:hover { fill: #6a994e; color: #6a994e; } /* green */
+#k-serathis:hover{ fill: #457b9d; color: #457b9d; } /* sea blue */
+#k-thryssia:hover{ fill: #f77f00; color: #f77f00; } /* orange */
+#k-kaelvyrn:hover{ fill: #5a189a; color: #5a189a; } /* purple */
+#k-veyra:hover   { fill: #ffba08; color: #ffba08; } /* gold */
+#k-myrrdain:hover{ fill: #003049; color: #003049; } /* scholarly navy */
+#k-norveth:hover { fill: #2a9d8f; color: #2a9d8f; } /* teal */
+#k-gilded-league:hover  { fill: #9d0208; color: #9d0208; } /* merchant red */
+#k-sugarspire:hover { fill: #ff6f91; color: #ff6f91; } /* pastel pink */
 
 /* ------------------------------------------------------------------------
    6. MODAL & OVERLAY COMPONENTS
@@ -593,6 +666,55 @@ a:hover {
 
 .modal-body {
   padding: var(--space-lg);
+}
+/* Overlay */
+.map-modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  z-index: 9999; /* on top of everything */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.7); /* dark overlay */
+  backdrop-filter: blur(4px); /* nice blur effect */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal box */
+.map-modal-content {
+  background: var(--clr-surface-dark);
+  margin: auto;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  animation: fadeInUp 0.3s ease-out;
+  text-align: center;
+}
+
+.map-modal-content ul {
+  list-style: none;
+  line-height: var(--space-xl);
+}
+
+/* Close button */
+.map-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.map-modal-close:hover {
+  color: #d62828; /* accent red on hover */
 }
 
 /* Form Styles */

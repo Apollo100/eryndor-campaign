@@ -1,5 +1,3 @@
-import { auth, db } from './main.js';
-
 document.addEventListener("DOMContentLoaded", () => {
 
 
