@@ -1,5 +1,5 @@
 [build]
-  command = "none"
+  command = ""
   publish = "."
 
 # Pretty URLs: /slug → /slug.html
