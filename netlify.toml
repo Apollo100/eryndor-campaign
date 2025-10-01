@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "none"
   publish = "."
 
 # Pretty URLs: /slug → /slug.html
