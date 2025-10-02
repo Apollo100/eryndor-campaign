@@ -234,9 +234,10 @@ a:hover {
 /* Main Content Area */
 .main-content {
   margin-left: var(--nav-width);
-  padding: var(--space-md) 0;
+  padding: 0 var(--space-md);
   transition: margin-left var(--transition-base);
   min-height: 100vh;
+  background: url('/src/images/Design-removebg-preview.png') no-repeat / cover;
 }
 
 /* ------------------------------------------------------------------------
@@ -386,7 +387,7 @@ a:hover {
 .nav-toggle {
   display: none;
   position: fixed;
-  top: var(--space-md);
+  bottom: var(--space-md);
   left: var(--space-md);
   z-index: var(--z-modal);
   width: 3.5rem;
@@ -398,6 +399,63 @@ a:hover {
   cursor: pointer;
   box-shadow: var(--shadow-lg);
   transition: all var(--transition-base);
+}
+
+.lore-tabs {
+  position: sticky;
+  top: var(--nav-height, 0); /* sits right under your main nav */
+  z-index: var(--z-sticky);
+
+  display: flex;
+  justify-content: flex-start; /* start-aligned for scrolling */
+  gap: var(--space-sm);
+
+  background: var(--clr-surface);
+  border-bottom: 2px solid var(--clr-surface-dark);
+  padding: var(--space-sm) var(--space-md);
+  box-shadow: var(--shadow-md);
+
+  overflow-x: auto;        /* scroll horizontally on small screens */
+  scrollbar-width: none;   /* hide scrollbar (Firefox) */
+}
+
+.lore-tabs::-webkit-scrollbar {
+  display: none; /* hide scrollbar (Chrome/Safari/Edge) */
+}
+
+.lore-tabs a {
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  color: var(--clr-text-muted);
+  text-decoration: none;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--border-radius);
+  white-space: nowrap;   /* keep labels on one line */
+  transition: background var(--transition-base), color var(--transition-base);
+}
+
+.lore-tabs a:hover {
+  background: var(--clr-primary-dark);
+  color: var(--clr-text);
+}
+
+.lore-tabs a.active {
+  background: var(--clr-primary);
+  color: var(--clr-bg);
+  font-weight: var(--fw-bold);
+}
+
+.content {
+  padding: 0 1rem;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
 }
 
 /* ------------------------------------------------------------------------
@@ -546,7 +604,7 @@ a:hover {
   flex-direction: column;
   align-items: center;
   margin: 2rem auto;
-  max-width: 1600px;
+  max-width: 100%;
   padding: 1rem;
 }
 
