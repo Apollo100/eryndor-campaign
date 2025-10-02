@@ -17,74 +17,9 @@
 -->
 
 <body>
-    <nav class="side-nav">
-        <div class="nav-brand">
-            <img src="/src/images/Eryndor_Logo.png" alt="Eryndor Logo" class="nav-logo">
-        </div>
-
-        <!-- Navigation Items -->
-        <ul class="nav-list">
-            <li class="nav-item">
-                <a href="index.html" class="nav-link">
-                    <i class="fas fa-home"></i>
-                    <span class="link-text">Home</span>
-                </a>
-            </li>
-
-            <li class="nav-item has-submenu">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-user"></i>
-                    <span class="link-text">Characters</span>
-                    <i class="fas fa-chevron-down dropdown-arrow"></i>
-                </a>
-                <ul class="submenu">
-                    <li class="submenu-item"><a href="pages/npcs.html">NPCs</a></li>
-                    <li class="submenu-item"><a href="pages/pc.html">Players</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item has-submenu">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-book"></i>
-                    <span class="link-text">Lore</span>
-                    <i class="fas fa-chevron-down dropdown-arrow"></i>  
-                </a>
-                <ul class="submenu">
-                    <li class="submenu-item"><a href="#">The Peoples of Eryndor</a></li>
-                    <li class="submenu-item"><a href="pages/worldlore.html">World Lore</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item" id="loginItem">
-                <a href="#" onclick="toggleLogin(true)" class="nav-link">
-                    <i class="fas fa-sign-in-alt"></i>
-                    <span class="link-text">Login</span>
-                </a>
-            </li>
-
-            <li class="nav-item has-submenu" id="userDropdown" style="display: none;">
-                <a href="#" class="nav-link">
-                    <i class="fas fa-user-circle"></i>
-                    <span class="link-text" id="userNameDisplay">Player</span>
-                    <i class="fas fa-chevron-down dropdown-arrow"></i>
-                </a>
-                <ul class="submenu">
-                    <!-- Player Only -->
-                     <li class="player-only"><a href="#"><i class="fas fa-backpack"></i> Inventory</a></li>
-                     <li class="player-only"><a href="#"><i class="fas fa-scroll"></i> Notes</a></li>
-                     <li class="player-only"><a href="#"><i class="fas fa-fire"></i> Feats / Spells</a></li>
-                    <!-- DM-Only -->
-                    <li class="dm-only"><a href="pages/dm_pages.html"><i class="fas fa-hat-wizard"></i>DM ToolKit</a></li>
-                    <!-- Shared -->
-                     <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
-    <!-- Mobile Menu Toggle -->
-    <div class="nav-toggle" id="navToggle">
-        <i class="fa-solid fa-bars"></i>
+    
+    <div id="navbar-container">
+        
     </div>
 
     <!-- Main Content-->
