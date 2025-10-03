@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/src/styles/style.css">
+    <title>Character</title>
+</head>
+<body>
+    <div id="navbar-container">
+
+    </div>
+
+    <main class="main-content">
+        <section class="card pc-card">
+            <div class="card-header">
+                <h2 id="char-name">Loading...</h2>
+                <p id="char-class">--</p>
+            </div>
+            <div class="card-body flex flex-gap-md">
+                <div>
+                    <p><strong>HP:</strong> <span id="hp">--/--</span></p>
+                    <p><strong>AC:</strong> <span id="ac">--</span></p>
+                    <p><strong>Alignment:</strong> <span id="alignment">--</span></p>
+                </div>
+                <div>
+                    <p><strong>Race:</strong><span id="race">--</span></p>
+                    <p><strong>Proficiency Bonus:</strong><span id="prof-bonus">--</span></p>
+                    <p><strong>Currency:</strong><span id="currency">--</span></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card pc-card">
+            <div class="card-header collapsible"></div>
+        </section>
+    </main>
+</body>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+<script src="/src/js/firebase-init.js"></script>
+<script src="/src/js/nav.js"></script>
+
+<script src="https://kit.fontawesome.com/7731291074.js" crossorigin="anonymous"></script>
+
+</html>
