@@ -891,6 +891,23 @@ a:hover {
   color: var(--clr-primary);
 }
 
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.action-buttons .btn-primary {
+  font-size: 1em;
+  padding: 1em;
+  border-radius: var(--border-radius);
+  border: none;
+  width: 50%;
+  color: var(--clr-surface-dark);
+  font-weight: var(--fw-semibold);
+}
+
 /* ------------------------------------------------------------------------
    8. UTILITY CLASSES
    - Spacing utilities
