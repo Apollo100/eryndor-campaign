@@ -908,6 +908,11 @@ a:hover {
   font-weight: var(--fw-semibold);
 }
 
+.action-buttons .btn-primary:hover {
+  background: var(--clr-accent-dark);
+  color: #fff;
+}
+
 /* ------------------------------------------------------------------------
    8. UTILITY CLASSES
    - Spacing utilities
