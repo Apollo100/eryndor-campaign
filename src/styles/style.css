@@ -417,6 +417,8 @@ a:hover {
 
   overflow-x: auto;        /* scroll horizontally on small screens */
   scrollbar-width: none;   /* hide scrollbar (Firefox) */
+
+  margin-left: var(--nav-width);
 }
 
 .lore-tabs::-webkit-scrollbar {
