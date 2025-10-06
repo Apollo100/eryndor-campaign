@@ -50,26 +50,26 @@ async function loadCharacterByOwner(userId) {
 
 
 function renderCharacterHeader(charData) {
-  const header = document.getElementById("charHeader");
+  // Character name
+  document.getElementById("charName").textContent = charData.name;
 
-  if(!charData) {
-    header.innerHTML = "<p>Error: No Character Data Found. <p>";
-    return;
-  }
+  // Tags (race, classes, proficiency)
+  const tagContainer = document.getElementById("charTags");
+  tagContainer.innerHTML = "";
 
-  const classList = Object.entries(charData.class || {}).map(([cls, lvl]) => `${capitalize(cls)} ${lvl}`).join(" / ");
+  const raceTag = `<span class="tag">${charData.race}</span>`;
+  const profTag = `<span class="tag">+${charData.proficiencyBonus} PROF</span>`;
+  
+  const classTags = Object.entries(charData.class)
+    .map(([cls, lvl]) => `<span class="tag">${cls} Lv.${lvl}</span>`)
+    .join("");
 
-  const totalLevel = Object.values(charData.class || {}).reduce((a, b) => a + b, 0);
+  tagContainer.innerHTML = raceTag + classTags + profTag;
 
-  header.innerHTML = `
-    <div class="char-header-block">
-      <h1>${charData.name || "Unnamed Adventurer"}</h1>
-      <p><strong>Race:</strong> ${charData.race || "Unknown Race"}
-      <strong>Classes:</strong> ${classList || "No Class"} (Lvl ${totalLevel})
-      <strong>AC:</strong> ${charData.ac ?? "—"} | <strong>HP:</strong> ${charData.hp?.current ?? "?"} / ${charData.hp?.max ?? "?"}
-      <strong>Proficiency Bonus:</strong> +${charData.proficiencyBonus ?? "?"}</p>
-    </div>
-  `;
+  // AC & HP
+  document.getElementById("charAC").textContent = charData.ac || "—";
+  document.getElementById("charHP").textContent = `${charData.hp.current} / ${charData.hp.max}`;
+  document.getElementById("charProf").textContent = charData.proficiencyBonus || 0;
 }
 
 function capitalize(str) {
@@ -77,97 +77,147 @@ function capitalize(str) {
 }
 
 function renderCharacterStats(charData) {
-  const statsEl = document.getElementById("statList");
+  const statsEl = document.getElementById("charStats");
   statsEl.innerHTML = "";
+
   for (const [stat, value] of Object.entries(charData.stats)) {
-    const li = document.createElement("li");
-    li.textContent = `${stat.toUpperCase()}: ${value}`;
-    statsEl.appendChild(li);
+    const mod = Math.floor((value - 10) / 2);
+    const div = document.createElement("div");
+    div.classList.add("card", "p-md");
+    div.innerHTML = `
+      <strong>${stat.toUpperCase()}</strong><br>
+      <span>${value}</span> 
+      <span class="text-muted">(${mod >= 0 ? "+" : ""}${mod})</span> 
+    `;
+    statsEl.appendChild(div);
   }
 }
 
 async function loadCharacterInventory(charId) {
   const invRef = db.collection("characters").doc(charId).collection("inventory");
+  const invSnap = await invRef.get();
 
-  try {
-    const invSnap = await invRef.get();
-    const inventoryItems = [];
+  const invDocs = invSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const itemIds = invDocs.map(i => i.itemId || i.id);
 
-    for (const doc of invSnap.docs) {
-      const invData = doc.data();
-      const itemId = invData.itemId || doc.id;
+  // Batch fetch static items in parallel
+  const itemFetches = itemIds.map(id => db.collection("items").doc(id).get());
+  const itemSnaps = await Promise.all(itemFetches);
 
-      // Get static item info
-      const itemDoc = await db.collection("items").doc(itemId).get();
-      const itemData = itemDoc.exists ? itemDoc.data() : {};
+  const itemsById = {};
+  itemSnaps.forEach(snap => {
+    if (snap.exists) itemsById[snap.id] = snap.data();
+  });
 
-      // Combine static + dynamic data
-      const mergedItem = {
-        id: doc.id,
-        ...itemData,   // global catalog (type, damage, etc.)
-        ...invData     // player-specific (quantity, equipped, notes)
-      };
+  const merged = invDocs.map(invItem => ({
+    ...itemsById[invItem.itemId || invItem.id],
+    ...invItem
+  }));
 
-      inventoryItems.push(mergedItem);
-    }
-
-    renderInventory(inventoryItems);
-  } catch (error) {
-    console.error("Failed to load inventory:", error);
-  }
+  renderInventory(merged);
 }
 
 function renderInventory(items) {
-  const tableBody = document.querySelector("#inventoryTable tbody");
-  tableBody.innerHTML = "";
+  const tagContainer = document.getElementById("inventoryTags");
+  const bodyContainer = document.getElementById("inventoryBody");
 
-  if(!items || items.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="5"><em>No items found.</em></td></tr>`;
+  tagContainer.innerHTML = "";
+  bodyContainer.innerHTML = "";
+
+  if (!items || items.length === 0) {
+    bodyContainer.innerHTML = "<p>No items in inventory.</p>";
     return;
   }
 
-  items.forEach(item => {
-    //Extract Relevant Info Safely
-    const name = item.name || item.id || "Unknown Item";
-    const type = item.type ? item.type.charAt(0).toUpperCase() + item.type.slice(1) : "-";
-    const weight = item.weight ? `${item.weight} lb` : "-";
-    const equipped = item.equipped ? "✅" : "";
-    const qty = item.quantity ?? 1;
+  // 1️⃣ Group items by type
+  const grouped = items.reduce((acc, item) => {
+    const type = item.type?.toLowerCase() || "misc";
+    if (!acc[type]) acc[type] = [];
+    acc[type].push(item);
+    return acc;
+  }, {});
 
-    const row = document.createElement("tr");
+  // 2️⃣ Create tags for each section
+  for (const [type, group] of Object.entries(grouped)) {
+    const tag = document.createElement("span");
+    tag.classList.add("tag", "inventory-tag");
+    tag.textContent = `${type.toUpperCase()} (${group.length})`;
+    tagContainer.appendChild(tag);
+  }
 
-    row.innerHTML = `
-      <tr>${name}</tr>
-      <td>${type}</td>
-      <td>${weight}</td>
-      <td class = "center">${equipped}</td>
-      <td>${qty}</td>
+  // 3️⃣ Create section cards for each type
+  for (const [type, groupItems] of Object.entries(grouped)) {
+    const typeCard = document.createElement("div");
+    typeCard.classList.add("inventory-category-card", "card");
+
+    typeCard.innerHTML = `
+      <div class="card-header">
+        <h3>${type.toUpperCase()}</h3>
+        <span class="tag">${groupItems.length} item${groupItems.length !== 1 ? "s" : ""}</span>
+      </div>
+      <div class="card-body inventory-items-grid"></div>
     `;
 
-    row.title = buildItemTooltip(item);
+    const itemsContainer = typeCard.querySelector(".inventory-items-grid");
 
-    tableBody.appendChild(row);
-  });
+    // 4️⃣ Create item cards inside this category
+    groupItems.forEach(item => {
+      const itemCard = document.createElement("div");
+      itemCard.classList.add("inventory-item-card", "card", `rarity-${item.rarity || "common"}`);
+
+      let extraDetails = "";
+
+      if (item.type === "weapon" && item.baseDamage) {
+        const dmg = item.baseDamage;
+        if (dmg.diceCount && dmg.diceValue) {
+          extraDetails = `${dmg.diceCount}d${dmg.diceValue} ${dmg.damageType || ""}`;
+        } else if (dmg.damageDice) {
+          extraDetails = `${dmg.damageDice} ${dmg.damageType || ""}`;
+        }
+      } else if (item.type === "armor") {
+        if (item.armorClass && typeof item.armorClass === "object") {
+          extraDetails = `AC ${item.armorClass.base || ""} +${item.armorClass.bonus || 0}`;
+        } else if (item.acBonus) {
+          extraDetails = `AC +${item.acBonus}`;
+        }
+      }
+
+      console.log(extraDetails);
+
+      itemCard.innerHTML = `
+        <div class="card-header">
+          <h4>${item.name || item.id}</h4>
+          ${item.equipped ? '<span class="tag equipped">Equipped</span>' : ""}
+        </div>
+        <div class="card-body">
+          <p><strong>Weight:</strong> ${item.weight ?? "—"} lb</p>
+          <p><strong>Quantity:</strong> ${item.quantity ?? 1}</p>
+          ${extraDetails ? `<p><em>${extraDetails}</em></p>` : ""}
+          ${item.notes ? `<p class="notes">${item.notes}</p>` : ""}
+        </div>
+      `;
+
+      itemsContainer.appendChild(itemCard);
+      
+    });
+
+    bodyContainer.appendChild(typeCard);
+  }
 }
 
-function buildItemTooltip(item) {
-  const lines = [];
+document.addEventListener("click", e => {
+  const header = e.target.closest(".card-header");
+  if (!header) return;
 
-  if(item.baseDamage) {
-    lines.push(`Damage: ${item.baseDamage.diceCount}d${item.baseDamage.diceValue} ${item.baseDamage.damageType}`);
-  }
+  const card = header.closest(".card");
+  if (!card) return;
 
-  if(item.properties?.length) {
-    lines.push(`Properties: ${item.properties.join(", ")}`);
-  }
+  const body = card.querySelector(".card-body");
+  if (!body) return;
 
-  if(item.armotType) {
-    lines.push(`Armor Type: ${item.armorType}`);
-  }
+  // Stop clicks from triggering parent cards too
+  e.stopPropagation();
 
-  if (item.notes) {
-    lines.push(`Notes: ${item.notes}`);
-  }
-
-  return lines.join(" • ")
-}
+  body.classList.toggle("expanded");
+  header.classList.toggle("expanded");
+});
