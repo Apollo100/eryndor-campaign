@@ -94,6 +94,7 @@ function renderCharacterStats(charData) {
 }
 
 async function loadCharacterInventory(charId) {
+
   const invRef = db.collection("characters").doc(charId).collection("inventory");
   const invSnap = await invRef.get();
 
@@ -160,52 +161,165 @@ function renderInventory(items) {
 
     const itemsContainer = typeCard.querySelector(".inventory-items-grid");
 
-    // 4️⃣ Create item cards inside this category
-    groupItems.forEach(item => {
-      const itemCard = document.createElement("div");
-      itemCard.classList.add("inventory-item-card", "card", `rarity-${item.rarity || "common"}`);
-
-      let extraDetails = "";
-
-      if (item.type === "weapon" && item.baseDamage) {
-        const dmg = item.baseDamage;
-        if (dmg.diceCount && dmg.diceValue) {
-          extraDetails = `${dmg.diceCount}d${dmg.diceValue} ${dmg.damageType || ""}`;
-        } else if (dmg.damageDice) {
-          extraDetails = `${dmg.damageDice} ${dmg.damageType || ""}`;
-        }
-      } else if (item.type === "armor") {
-        if (item.armorClass && typeof item.armorClass === "object") {
-          extraDetails = `AC ${item.armorClass.base || ""} +${item.armorClass.bonus || 0}`;
-        } else if (item.acBonus) {
-          extraDetails = `AC +${item.acBonus}`;
-        }
-      }
-
-      console.log(extraDetails);
-
-      itemCard.innerHTML = `
-        <div class="card-header">
-          <h4>${item.name || item.id}</h4>
-          ${item.equipped ? '<span class="tag equipped">Equipped</span>' : ""}
-        </div>
-        <div class="card-body">
-          <p><strong>Weight:</strong> ${item.weight ?? "—"} lb</p>
-          <p><strong>Quantity:</strong> ${item.quantity ?? 1}</p>
-          ${extraDetails ? `<p><em>${extraDetails}</em></p>` : ""}
-          ${item.notes ? `<p class="notes">${item.notes}</p>` : ""}
-        </div>
-      `;
-
+    // 4️⃣ Process items - handle stackable vs non-stackable differently
+    const processedItems = processItemsForDisplay(groupItems);
+    
+    // 5️⃣ Create item cards
+    processedItems.forEach(processedItem => {
+      const itemCard = createItemCard(processedItem);
       itemsContainer.appendChild(itemCard);
-      
     });
 
     bodyContainer.appendChild(typeCard);
   }
 }
 
-document.addEventListener("click", e => {
+// Helper function to process items for display
+function processItemsForDisplay(items) {
+  const processed = [];
+  
+  items.forEach(item => {
+    const isStackable = item.isStackable || false;
+    const quantity = item.quantity || 1;
+    
+    if (isStackable) {
+      // Stackable items: create ONE card with quantity display
+      processed.push({
+        ...item,
+        displayType: 'stack',
+        displayQuantity: quantity
+      });
+    } else {
+      // Non-stackable items: create INDIVIDUAL cards for each item
+      for (let i = 0; i < quantity; i++) {
+        processed.push({
+          ...item,
+          displayType: 'individual',
+          instanceNumber: i + 1,
+          displayQuantity: 1
+        });
+      }
+    }
+  });
+  
+  return processed;
+}
+
+// Helper function to create individual item cards
+function createItemCard(processedItem) {
+  const itemCard = document.createElement("div");
+  const rarityClass = `rarity-${processedItem.rarity || "common"}`;
+  const stackableClass = processedItem.displayType === 'stack' ? 'stackable-item' : 'individual-item';
+  
+  itemCard.classList.add("inventory-item-card", "card", rarityClass, stackableClass);
+
+  let extraDetails = "";
+  if (processedItem.type === "weapon" && processedItem.baseDamage) {
+    const dmg = processedItem.baseDamage;
+    if (dmg.diceCount && dmg.diceValue) {
+      extraDetails = `${dmg.diceCount}d${dmg.diceValue} ${dmg.damageType || ""}`;
+    } else if (dmg.damageDice) {
+      extraDetails = `${dmg.damageDice} ${dmg.damageType || ""}`;
+    }
+    
+    // Add properties info
+    if (processedItem.properties && processedItem.properties.length > 0) {
+      extraDetails += ` [${processedItem.properties.join(', ')}]`;
+    }
+  } else if (processedItem.type === "armor") {
+    if (processedItem.armorClass && typeof processedItem.armorClass === "object") {
+      extraDetails = `AC ${processedItem.armorClass.base || ""} +${processedItem.armorClass.bonus || 0}`;
+    } else if (processedItem.acBonus) {
+      extraDetails = `AC +${processedItem.acBonus}`;
+    }
+  }
+
+  // Build card with appropriate display
+  const isEquipped = processedItem.equipped || false;
+  const isStackable = processedItem.isStackable || false;
+  
+  // Determine title and quantity display
+  let title = processedItem.name || processedItem.id;
+  let quantityDisplay = '';
+  
+  if (processedItem.displayType === 'stack') {
+    // Stackable item - show quantity in title
+    title += ` (${processedItem.displayQuantity})`;
+  } else if (processedItem.quantity > 1) {
+    // Individual item from a stack - show instance number
+    title += ` #${processedItem.instanceNumber}`;
+  }
+
+  itemCard.innerHTML = `
+    <div class="card-header">
+      <h4>${title}</h4>
+      <div class="item-actions">
+        ${processedItem.displayType === 'stack' ? `
+          <div class="quantity-controls">
+            <button class="btn-sm" data-itemid="${processedItem.id}" data-action="decrease">-</button>
+            <span class="quantity-display">${processedItem.displayQuantity}</span>
+            <button class="btn-sm" data-itemid="${processedItem.id}" data-action="increase">+</button>
+          </div>
+        ` : ''}
+        <span class="tag ${isEquipped ? "equipped" : "equip-toggle"}" 
+              data-itemid="${processedItem.id}" 
+              data-instance="${processedItem.instanceNumber || 1}"
+              data-equipped="${isEquipped}">
+          ${isEquipped ? "Equipped ✅" : "Equip"}
+        </span>
+      </div>
+    </div>
+    <div class="card-body">
+      <p><strong>Type:</strong> ${processedItem.type || "Unknown"}</p>
+      <p><strong>Stackable:</strong> ${isStackable ? 'Yes' : 'No'}</p>
+      <p><strong>Weight:</strong> ${processedItem.weight ?? "—"} lb</p>
+      ${processedItem.displayType === 'individual' && processedItem.quantity > 1 ? 
+        `<p><strong>Instance:</strong> ${processedItem.instanceNumber} of ${processedItem.quantity}</p>` : ''}
+      ${processedItem.properties && processedItem.properties.length > 0 ? 
+        `<p><strong>Properties:</strong> ${processedItem.properties.join(', ')}</p>` : ""}
+      ${extraDetails ? `<p><em>${extraDetails}</em></p>` : ""}
+      ${processedItem.notes ? `<p class="notes">${processedItem.notes}</p>` : ""}
+    </div>
+  `;
+
+  return itemCard;
+}
+
+document.addEventListener("click", async (e) => {
+  // First, check if click is on an equip button
+  if (e.target.classList.contains("equip-toggle") || e.target.classList.contains("equipped")) {
+    const itemId = e.target.dataset.itemid;
+    const currentlyEquipped = e.target.dataset.equipped === "true";
+    
+    if (!itemId) return;
+    
+    // Show loading state
+    const originalText = e.target.textContent;
+    e.target.textContent = "Updating...";
+    e.target.disabled = true;
+    
+    try {
+      await toggleEquipItem(itemId, !currentlyEquipped);
+      
+      // Reload the character data to reflect changes
+      const user = auth.currentUser;
+      if (user) {
+        await loadCharacterByOwner(user.uid);
+      }
+    } catch (error) {
+      console.error("Error updating equipment:", error);
+      alert(error.message);
+      // Reset button state on error
+      e.target.textContent = originalText;
+      e.target.disabled = false;
+    }
+    
+    // Stop propagation since we handled this click
+    e.stopPropagation();
+    return;
+  }
+  
+  // Then, check if click is on a card header (for expand/collapse)
   const header = e.target.closest(".card-header");
   if (!header) return;
 
@@ -221,3 +335,132 @@ document.addEventListener("click", e => {
   body.classList.toggle("expanded");
   header.classList.toggle("expanded");
 });
+
+async function toggleEquipItem(itemId, equipState) {
+  console.log(`=== TOGGLE EQUIP START ===`);
+  console.log(`Item: ${itemId}, Equip: ${equipState}`);
+  
+  const user = auth.currentUser;
+  if (!user) throw new Error("User not logged in");
+  
+  const charQuery = await db.collection("characters").where("owner", "==", user.uid).get();
+  if (charQuery.empty) throw new Error("Character not found");
+  
+  const charId = charQuery.docs[0].id;
+  const inventoryRef = db.collection("characters").doc(charId).collection("inventory");
+  
+  // Get ALL inventory items for debugging
+  const allInventoryItems = await inventoryRef.get();
+  console.log('All inventory items:');
+  
+  // First, get all base item data for the inventory
+  const inventoryWithBaseData = await Promise.all(
+    allInventoryItems.docs.map(async (doc) => {
+      const invData = doc.data();
+      const baseItemId = invData.itemId || doc.id;
+      const baseItemDoc = await db.collection("items").doc(baseItemId).get();
+      const baseData = baseItemDoc.exists ? baseItemDoc.data() : {};
+      
+      console.log(`- ${doc.id}:`, {
+        inventory: invData,
+        base: baseData
+      });
+      
+      return {
+        id: doc.id,
+        inventoryData: invData,
+        baseData: baseData
+      };
+    })
+  );
+  
+  // Get current item data
+  const currentItem = inventoryWithBaseData.find(item => item.id === itemId);
+  if (!currentItem) throw new Error("Current item not found in inventory");
+  
+  console.log(`Current item:`, currentItem);
+  
+  const batch = db.batch();
+  
+  if (equipState && currentItem.baseData.type === 'weapon') {
+    console.log('Equipping weapon - checking for other equipped weapons');
+    
+    // Find all currently equipped weapons by checking base data
+    const equippedWeapons = inventoryWithBaseData.filter(item => 
+      item.baseData.type === 'weapon' && item.inventoryData.equipped
+    );
+    
+    console.log(`Found ${equippedWeapons.length} equipped weapons:`, equippedWeapons.map(w => w.id));
+    
+    // Check if current weapon is two-handed
+    const isTwoHanded = currentItem.baseData.properties && 
+                       Array.isArray(currentItem.baseData.properties) && 
+                       currentItem.baseData.properties.includes('Two-Handed');
+    
+    // Check if any equipped weapon is two-handed
+    const hasTwoHandedEquipped = equippedWeapons.some(weapon =>
+      weapon.baseData.properties && 
+      Array.isArray(weapon.baseData.properties) && 
+      weapon.baseData.properties.includes('Two-Handed')
+    );
+    
+    console.log(`Current is two-handed: ${isTwoHanded}, Has two-handed equipped: ${hasTwoHandedEquipped}`);
+    
+    // Apply equipment rules
+    if (isTwoHanded || hasTwoHandedEquipped) {
+      // Two-handed rule: unequip all other weapons
+      equippedWeapons.forEach(weapon => {
+        if (weapon.id !== itemId) {
+          console.log(`Unequipping weapon due to two-handed rule: ${weapon.id}`);
+          batch.update(inventoryRef.doc(weapon.id), {
+            equipped: false,
+            lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        }
+      });
+    } else if (equippedWeapons.length >= 2) {
+      throw new Error("You can only equip 2 weapons at once");
+    }
+    
+    // Equip the current weapon
+    batch.update(inventoryRef.doc(itemId), {
+      equipped: true,
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+  } else if (equipState && currentItem.baseData.type === 'armor') {
+    console.log('Equipping armor - unequipping other armor');
+    
+    // Find all equipped armor
+    const equippedArmor = inventoryWithBaseData.filter(item => 
+      item.baseData.type === 'armor' && item.inventoryData.equipped
+    );
+    
+    // Unequip other armor
+    equippedArmor.forEach(armor => {
+      if (armor.id !== itemId) {
+        batch.update(inventoryRef.doc(armor.id), {
+          equipped: false,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    });
+    
+    // Equip current armor
+    batch.update(inventoryRef.doc(itemId), {
+      equipped: true,
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+  } else {
+    // Simple toggle for non-weapon/armor items or unequipping
+    batch.update(inventoryRef.doc(itemId), {
+      equipped: equipState,
+      lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+  
+  await batch.commit();
+  console.log('Batch committed successfully');
+  console.log(`=== TOGGLE EQUIP END ===`);
+}
