@@ -238,43 +238,30 @@ function createItemCard(processedItem) {
   const isEquipped = processedItem.equipped || false;
   const isStackable = processedItem.isStackable || false;
   
-  // Determine title and quantity display
+  // Determine title (clean without numbers)
   let title = processedItem.name || processedItem.id;
-  let quantityDisplay = '';
   
-  if (processedItem.displayType === 'stack') {
-    // Stackable item - show quantity in title
-    title += ` (${processedItem.displayQuantity})`;
-  } else if (processedItem.quantity > 1) {
-    // Individual item from a stack - show instance number
-    title += ` #${processedItem.instanceNumber}`;
-  }
+  // For stackable items, quantity will be shown in the tag area
+  // For individual items, no instance numbers - clean title only
 
   itemCard.innerHTML = `
     <div class="card-header">
       <h4>${title}</h4>
       <div class="item-actions">
-        ${processedItem.displayType === 'stack' ? `
-          <div class="quantity-controls">
-            <button class="btn-sm" data-itemid="${processedItem.id}" data-action="decrease">-</button>
-            <span class="quantity-display">${processedItem.displayQuantity}</span>
-            <button class="btn-sm" data-itemid="${processedItem.id}" data-action="increase">+</button>
-          </div>
-        ` : ''}
         <span class="tag ${isEquipped ? "equipped" : "equip-toggle"}" 
               data-itemid="${processedItem.id}" 
               data-instance="${processedItem.instanceNumber || 1}"
               data-equipped="${isEquipped}">
           ${isEquipped ? "Equipped ✅" : "Equip"}
         </span>
+        ${processedItem.displayType === 'stack' ? `
+          <span class="tag quantity-tag">Qty: ${processedItem.displayQuantity}</span>
+        ` : ''}
       </div>
     </div>
     <div class="card-body">
       <p><strong>Type:</strong> ${processedItem.type || "Unknown"}</p>
-      <p><strong>Stackable:</strong> ${isStackable ? 'Yes' : 'No'}</p>
       <p><strong>Weight:</strong> ${processedItem.weight ?? "—"} lb</p>
-      ${processedItem.displayType === 'individual' && processedItem.quantity > 1 ? 
-        `<p><strong>Instance:</strong> ${processedItem.instanceNumber} of ${processedItem.quantity}</p>` : ''}
       ${processedItem.properties && processedItem.properties.length > 0 ? 
         `<p><strong>Properties:</strong> ${processedItem.properties.join(', ')}</p>` : ""}
       ${extraDetails ? `<p><em>${extraDetails}</em></p>` : ""}
@@ -387,15 +374,13 @@ async function toggleEquipItem(itemId, equipState) {
     
     // Find all currently equipped weapons by checking base data
     const equippedWeapons = inventoryWithBaseData.filter(item => 
-      item.baseData.type === 'weapon' && item.inventoryData.equipped
+      item.baseData.type === 'weapon' &&  item.inventoryData.equipped
     );
     
     console.log(`Found ${equippedWeapons.length} equipped weapons:`, equippedWeapons.map(w => w.id));
     
     // Check if current weapon is two-handed
-    const isTwoHanded = currentItem.baseData.properties && 
-                       Array.isArray(currentItem.baseData.properties) && 
-                       currentItem.baseData.properties.includes('Two-Handed');
+    const isTwoHanded = currentItem.baseData.properties && Array.isArray(currentItem.baseData.properties) && currentItem.baseData.properties.includes('Two-Handed');
     
     // Check if any equipped weapon is two-handed
     const hasTwoHandedEquipped = equippedWeapons.some(weapon =>
